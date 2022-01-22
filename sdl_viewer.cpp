@@ -58,7 +58,7 @@ std::vector<SDL_Event> SDLViewer::Update() {
   // Compute fps and set window title.
   float avg_fps = num_updates_ / (timer_.Ms() / 1000.0f);
   SDL_SetWindowTitle(window_, 
-    (title_ + " - " + std::to_string(static_cast<int>(avg_fps)) + "fps").c_str());
+    (title_ + " - " + std::to_string(static_cast<int>(avg_fps)) + "hz").c_str());
   if (timer_.Ms() >= 1'000) {
     num_updates_ = 0;
     timer_.Start();

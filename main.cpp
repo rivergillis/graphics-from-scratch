@@ -28,7 +28,11 @@ int main(void) {
   Image img(kWidth, kHeight);
   img.SetAll(0);
   try {
+    const auto start_time = Clock::now();
     SetImage(&img);
+    std::chrono::duration<double> diff = Clock::now() - start_time;
+    std::cout << string_format("Rendered %d rays in %ldms\n", kWidth * kHeight,
+          std::chrono::duration_cast<std::chrono::milliseconds>(diff).count());
   } catch (const std::exception& e) {
     std::cerr << "ERROR: " << e.what() << std::endl;
     return 1;
