@@ -8,9 +8,6 @@ Color TraceRay(const std::vector<Sphere>& scene, const Vec3<float>& camera_pos, 
   float nearest_t = kInf;
   for (const auto& sphere : scene) {
     const Vec2<float> t = sphere.IntersectRay(camera_pos, ray);
-    // if (t.x >= t_min || t.y >= t_min) {
-    //   std::cout << string_format("HIT t1 %f t2 %f t_max %f\n", t.x, t.y, t_max);
-    // }
     if (t.x >= t_min && t.x < t_max && t.x < nearest_t) {
       nearest_t = t.x;
       nearest_sphere = &sphere;
@@ -23,9 +20,7 @@ Color TraceRay(const std::vector<Sphere>& scene, const Vec3<float>& camera_pos, 
   }
 
   if (nearest_sphere == nullptr) {
-    std::cout << "Returning bg color\n";
     return kBackgroundColor;
   }
-  std::cout << string_format("nearest t is %f", nearest_t);
   return nearest_sphere->color;
 }

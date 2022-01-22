@@ -36,9 +36,4 @@ struct Vec3 {
 using Color = Vec3<uint8_t>;
 using Ray = Vec3<float>;
 
-// Applies to - from
-inline Ray RayTo(const Vec3<float>& from, const Vec3<float>& to) {
-  return to - from;
-}
-
 #endif  // VEC_H_

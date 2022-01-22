@@ -15,13 +15,9 @@ void SetImage(Image* img) {
   for (int x = -(kWidth/2); x < (kWidth/2); x++) {
     for (int y = -(kHeight/2) + 1; y <= (kHeight/2); y++) {
       const Vec3<float> viewport_pos = CanvasToViewport({x, y});
-      // Why does this only work for O - V?????
-      // const Ray ray_out_viewport = kCameraPos - viewport_pos; // D = V - O (from O to V)
       const Ray ray_out_viewport = viewport_pos - kCameraPos; // D = V - O (from O to V)
       const Color color = TraceRay(scene, kCameraPos, ray_out_viewport, 1.0f, kInf);
-      const Vec2<int> screen_pos = CanvasToScreen({x, y});
-      std::cout << string_format("x %d y %d viewport_pos %s ray_out_viewport %s color %s Screen xy %s\n", x, y, ToString(viewport_pos).c_str(), ToString(ray_out_viewport).c_str(), ToString(color).c_str(), ToString(screen_pos).c_str());
-      img->SetPixel(screen_pos, color);
+      img->SetPixel(CanvasToScreen({x,y}), color);
     }
   }
 }
