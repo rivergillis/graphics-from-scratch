@@ -69,28 +69,35 @@ inline Vec3<float> CanvasToViewport(const Vec2<int>& c) {
 
 // Saturation arithmetic for colors
 // TODO: Verify that these are what's needed (not Color*Color)
-uint8_t SatAdd(uint8_t lhs, uint8_t rhs) {
+inline uint8_t SatAdd(uint8_t lhs, uint8_t rhs) {
   const uint16_t big_res = static_cast<uint16_t>(lhs) + rhs;
   if (big_res > 0xFF) return 0xFF;
   return big_res;
 }
-uint8_t SatSub(uint8_t lhs, uint8_t rhs) {
+inline uint8_t SatSub(uint8_t lhs, uint8_t rhs) {
   const int16_t big_res = static_cast<int16_t>(lhs) - rhs;
   if (big_res < 0) return 0;
   return big_res;
 }
-uint8_t SatMult(uint8_t lhs, uint8_t rhs) {
+inline uint8_t SatMult(uint8_t lhs, uint8_t rhs) {
   const uint16_t big_res = static_cast<uint16_t>(lhs) * rhs;
   if (big_res > 0xFF) return 0xFF;
   return big_res;
 }
-Color ColorAdd(const Color& c, uint8_t amt) {
+inline uint8_t SatMult(uint8_t lhs, float rhs) {
+  const float big_res = static_cast<float>(lhs) * rhs;
+  if (big_res > 0xFF) return 0xFF;
+  if (big_res < 0) return 0;
+  return big_res;
+}
+inline Color ColorAdd(const Color& c, uint8_t amt) {
   return {SatAdd(c.x, amt), SatAdd(c.y, amt), SatAdd(c.z, amt)};
 }  
-Color ColorSub(const Color& c, uint8_t amt) {
+inline Color ColorSub(const Color& c, uint8_t amt) {
   return {SatSub(c.x, amt), SatSub(c.y, amt), SatSub(c.z, amt)};
 }
-Color ColorMult(const Color& c, uint8_t amt) {
+template <typename T>
+inline Color ColorMult(const Color& c, T amt) {
   return {SatMult(c.x, amt), SatMult(c.y, amt), SatMult(c.z, amt)};
 }
 

@@ -4,12 +4,18 @@
 #include "vec.h"
 #include "sphere.h"
 #include "raytrace.h"
+#include "scene.h"
 
 void SetImage(Image* img) {
-  std::vector<Sphere> scene;
-  scene.push_back({.center = {0, -1, 3}, .radius = 1, .color = {255, 0, 0}});
-  scene.push_back({.center = {2, 0, 4}, .radius = 1, .color = {0, 0, 255}});
-  scene.push_back({.center = {-2, 0, 4}, .radius = 1, .color = {0, 255, 0}});
+  Scene scene;
+  scene.spheres.push_back({.center = {0, -1, 3}, .radius = 1, .color = {255, 0, 0}});
+  scene.spheres.push_back({.center = {2, 0, 4}, .radius = 1, .color = {0, 0, 255}});
+  scene.spheres.push_back({.center = {-2, 0, 4}, .radius = 1, .color = {0, 255, 0}});
+  scene.spheres.push_back({.center = {0, -5001, 0}, .radius = 5000, .color = {255, 255, 0}});
+
+  scene.ambient_intensity = 0.2f;
+  scene.point_lights.push_back({.intensity = 0.6f, .position = {2, 1, 0}});
+  scene.directional_lights.push_back({.intensity = 0.2f, .direction = {1, 4, 4}});
 
   // Raytracing algorithm
   for (int x = -(kWidth/2); x < (kWidth/2); x++) {

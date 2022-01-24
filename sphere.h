@@ -29,6 +29,12 @@ struct Sphere {
     };
     return t;
   }
+
+  Ray Normal(const Vec3<float>& position) const {
+    Ray n = position - center;
+    n.Normalize();
+    return n;
+  }
 };
 
 #endif  // SPHERE_H_

@@ -2,6 +2,7 @@
 #define VEC_H_
 
 #include <cstdlib>
+#include <cmath>
 
 template <typename T>
 struct Vec2 {
@@ -28,8 +29,23 @@ struct Vec3 {
   Vec3<T> operator+(const Vec3<T>& rhs) const {
     return {x + rhs.x, y + rhs.y, z + rhs.z};
   }
+  Vec3<T> operator*(const float amt) const {
+    return {x * amt, y * amt, z * amt};
+  }
   float Dot(const Vec3<T>& rhs) const {
     return (x * rhs.x) + (y * rhs.y) + (z * rhs.z);
+  }
+  float Length() const {
+    auto x_term = x * x;
+    auto y_term = y * y;
+    auto z_term = z * z;
+    return sqrtf(x_term + y_term + z_term);
+  }
+  void Normalize() {
+    const float length = Length();
+    x /= length;
+    y /= length;
+    z /= length;
   }
 };
 
