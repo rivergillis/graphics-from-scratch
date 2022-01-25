@@ -12,7 +12,6 @@ struct Sphere {
 
   // returns infinity for no solution.
   Vec2<float> IntersectRay(const Vec3<float>& camera_pos, const Ray& ray) const {
-    // const Ray to_camera = RayTo(camera_pos, center);  // CO = O - C
     const Ray to_camera = camera_pos - center;
 
     // Solve for a ray-sphere intersection.

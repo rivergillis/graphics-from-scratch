@@ -26,11 +26,12 @@ Color TraceRay(const Scene& scene, const Vec3<float>& camera_pos, const Ray& ray
 
   const Vec3<float> position = ray * nearest_t;
   const Ray surface_normal = nearest_sphere->Normal(position);
-  const float illumination = ComputeLighting(scene, position, surface_normal, nearest_sphere->specular);
+  const Ray obj_to_camera = camera_pos - nearest_sphere->center;
+  const float illumination = ComputeLighting(scene, position, surface_normal, obj_to_camera, nearest_sphere->specular);
   return ColorMult(nearest_sphere->color, illumination);
 }
 
-float ComputeLighting(const Scene& scene, const Vec3<float>& position, const Ray& normal, float specular) {
+float ComputeLighting(const Scene& scene, const Vec3<float>& position, const Ray& normal, const Ray& obj_to_camera, float specular) {
   // Sum up all of the intensities in the scene for this point
   float intensity = scene.ambient_intensity;
   for (const auto& light : scene.lights) {
@@ -47,9 +48,9 @@ float ComputeLighting(const Scene& scene, const Vec3<float>& position, const Ray
     }
 
     const Ray reflection = (normal * 2 * normal.Dot(light_vec)) - light_vec;
-    const float r_dot_v = reflection.Dot(light_vec);
+    const float r_dot_v = reflection.Dot(obj_to_camera);
     if (r_dot_v > 0) {
-      intensity += light->Intensity() * powf(r_dot_v / (reflection.Length() * light_vec.Length()), specular);
+      intensity += light->Intensity() * powf(r_dot_v / (reflection.Length() * obj_to_camera.Length()), specular);
     }
   }
 
