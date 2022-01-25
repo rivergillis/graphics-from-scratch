@@ -10,6 +10,6 @@
 Color TraceRay(const Scene& scene, const Vec3<float>& camera_pos, const Ray& ray, float t_min, float t_max);
 
 // Computes the light intensity for a position and surface normal in the scene.
-float ComputeLighting(const Scene& scene, const Vec3<float>& position, const Ray& normal);
+float ComputeLighting(const Scene& scene, const Vec3<float>& position, const Ray& normal, float specular);
 
 #endif  // RAYTRACE_H_

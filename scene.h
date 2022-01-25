@@ -5,30 +5,43 @@
 #include "sphere.h"
 #include "vec.h"
 
-struct PointLight {
-  float intensity;
-  Vec3<float> position;
-
-  Ray Direction(const Vec3<float> p) const {
-    return position - p;
-  }
+struct Light {
+  virtual Ray Direction(const Vec3<float> pos) const = 0;
+  virtual float Intensity() const = 0;
+  virtual ~Light() {}
 };
 
-struct DirectionalLight {
-  float intensity;
-  Ray direction;
-
-  Ray Direction(const Vec3<float> p) const {
-    return direction;
+struct PointLight : Light {
+  Vec3<float> position_;
+  float intensity_;
+  PointLight(const Vec3<float>& position, float intensity) {
+    position_ = position;
+    intensity_ = intensity;
   }
+  Ray Direction(const Vec3<float> p) const override {
+    return position_ - p;
+  }
+  float Intensity() const override { return intensity_; }
+};
+
+struct DirectionalLight : Light {
+  Ray direction_;
+  float intensity_;
+  DirectionalLight(const Ray& direction, float intensity) {
+    direction_ = direction;
+    intensity_ = intensity;
+  }
+  Ray Direction(const Vec3<float> p) const override {
+    return direction_;
+  }
+  float Intensity() const override { return intensity_; }
 };
 
 struct Scene {
   std::vector<Sphere> spheres;
 
   float ambient_intensity;
-  std::vector<PointLight> point_lights;
-  std::vector<DirectionalLight> directional_lights;
+  std::vector<std::unique_ptr<Light>> lights;
 };
 
 #endif  // SCENE_H_

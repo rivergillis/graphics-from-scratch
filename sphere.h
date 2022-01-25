@@ -8,6 +8,7 @@ struct Sphere {
   Vec3<float> center;
   float radius;
   Color color;
+  float specular; // -1 is matte, 10 is a little shiny, 1000 is very shiny.
 
   // returns infinity for no solution.
   Vec2<float> IntersectRay(const Vec3<float>& camera_pos, const Ray& ray) const {

@@ -36,9 +36,9 @@ struct Vec3 {
     return (x * rhs.x) + (y * rhs.y) + (z * rhs.z);
   }
   float Length() const {
-    auto x_term = x * x;
-    auto y_term = y * y;
-    auto z_term = z * z;
+    const auto x_term = x * x;
+    const auto y_term = y * y;
+    const auto z_term = z * z;
     return sqrtf(x_term + y_term + z_term);
   }
   void Normalize() {

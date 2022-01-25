@@ -26,28 +26,19 @@ Color TraceRay(const Scene& scene, const Vec3<float>& camera_pos, const Ray& ray
 
   const Vec3<float> position = ray * nearest_t;
   const Ray surface_normal = nearest_sphere->Normal(position);
-  return ColorMult(nearest_sphere->color, ComputeLighting(scene, position, surface_normal));
+  const float illumination = ComputeLighting(scene, position, surface_normal, nearest_sphere->specular);
+  return ColorMult(nearest_sphere->color, illumination);
 }
 
-float ComputeLighting(const Scene& scene, const Vec3<float>& position, const Ray& normal) {
+float ComputeLighting(const Scene& scene, const Vec3<float>& position, const Ray& normal, float specular) {
   // Sum up all of the intensities in the scene for this point
   float intensity = scene.ambient_intensity;
-  for (const auto& point_light : scene.point_lights) {
-    const Ray light_vec = point_light.Direction(position);
+  for (const auto& light : scene.lights) {
+    const Ray light_vec = light->Direction(position);
     const float n_dot_l = normal.Dot(light_vec);
     // Don't add negative values (this would illuminate the back of the surface)
     if (n_dot_l > 0) {
-      intensity += point_light.intensity * n_dot_l / (normal.Length() * light_vec.Length());
-    }
-  }
-
-  // Do the same thing for directional lights.
-  for (const auto& directional_light : scene.directional_lights) {
-    const Ray light_vec = directional_light.Direction(position);
-    const float n_dot_l = normal.Dot(light_vec);
-    // Don't add negative values (this would illuminate the back of the surface)
-    if (n_dot_l > 0) {
-      intensity += directional_light.intensity * n_dot_l / (normal.Length() * light_vec.Length());
+      intensity += light->Intensity() * n_dot_l / (normal.Length() * light_vec.Length());
     }
   }
 
