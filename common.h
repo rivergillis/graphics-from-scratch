@@ -15,6 +15,7 @@
 #include <vector>
 #include <limits>
 #include <chrono>
+#include <optional>
 
 #include "vec.h"
 
@@ -102,7 +103,7 @@ inline Color ColorMult(const Color& c, T amt) {
 }
 
 inline bool FloatEquals(float lhs, float rhs) {
-  static constexpr float kEpsilon = std::numeric_limits<float>::epsilon();
+static constexpr float kEpsilon = std::numeric_limits<float>::epsilon();
   return std::abs(lhs - rhs) < kEpsilon;
 }
 

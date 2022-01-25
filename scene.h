@@ -8,6 +8,7 @@
 struct Light {
   virtual Ray Direction(const Vec3<float> pos) const = 0;
   virtual float Intensity() const = 0;
+  virtual float TMax() const = 0; // for shadows
   virtual ~Light() {}
 };
 
@@ -22,6 +23,7 @@ struct PointLight : Light {
     return position_ - p;
   }
   float Intensity() const override { return intensity_; }
+  float TMax() const override { return 1; }
 };
 
 struct DirectionalLight : Light {
@@ -35,6 +37,7 @@ struct DirectionalLight : Light {
     return direction_;
   }
   float Intensity() const override { return intensity_; }
+  float TMax() const override { return kInf; }
 };
 
 struct Scene {

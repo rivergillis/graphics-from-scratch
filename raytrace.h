@@ -6,6 +6,10 @@
 #include "common.h"
 #include "scene.h"
 
+using Intersection = std::pair<float, Sphere>;
+
+std::optional<Intersection> ClosestIntersection(const Scene& scene, const Ray& ray, const Vec3<float>& ray_start, float t_min, float t_max);
+
 // Traces a ray from t_min to t_max, returns the color for the canvas.
 Color TraceRay(const Scene& scene, const Vec3<float>& camera_pos, const Ray& ray, float t_min, float t_max);
 

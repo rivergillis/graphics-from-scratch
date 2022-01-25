@@ -12,6 +12,7 @@ void SetImage(Image* img) {
   scene.spheres.push_back({.center = {2, 0, 4}, .radius = 1, .color = {0, 0, 255}, .specular = 500});
   scene.spheres.push_back({.center = {-2, 0, 4}, .radius = 1, .color = {0, 255, 0}, .specular = 10});
   scene.spheres.push_back({.center = {0, -5001, 0}, .radius = 5000, .color = {255, 255, 0}, .specular = 1000});
+  // scene.spheres.push_back({.center = {0, 0.7, 2}, .radius = 0.3, .color = {0, 255, 255}, .specular = 500});
 
   scene.ambient_intensity = 0.2f;
   scene.lights.push_back(std::make_unique<PointLight>(Vec3<float>{2,1,0}, 0.6f));
