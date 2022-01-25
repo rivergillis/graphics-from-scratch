@@ -101,6 +101,11 @@ inline Color ColorMult(const Color& c, T amt) {
   return {SatMult(c.x, amt), SatMult(c.y, amt), SatMult(c.z, amt)};
 }
 
+inline bool FloatEquals(float lhs, float rhs) {
+  static constexpr float kEpsilon = std::numeric_limits<float>::epsilon();
+  return std::abs(lhs - rhs) < kEpsilon;
+}
+
 // ToString()
 inline std::string ToString(const Vec3<float>& v) {
   return string_format("(%f, %f, %f)", v.x, v.y, v.z);

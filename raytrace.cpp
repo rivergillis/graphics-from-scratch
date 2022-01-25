@@ -40,6 +40,17 @@ float ComputeLighting(const Scene& scene, const Vec3<float>& position, const Ray
     if (n_dot_l > 0) {
       intensity += light->Intensity() * n_dot_l / (normal.Length() * light_vec.Length());
     }
+
+    // Specular lights (skip for matte objects).
+    if (FloatEquals(specular, -1)) {
+      continue;
+    }
+
+    const Ray reflection = (normal * 2 * normal.Dot(light_vec)) - light_vec;
+    const float r_dot_v = reflection.Dot(light_vec);
+    if (r_dot_v > 0) {
+      intensity += light->Intensity() * powf(r_dot_v / (reflection.Length() * light_vec.Length()), specular);
+    }
   }
 
   return intensity;
