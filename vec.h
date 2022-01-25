@@ -26,6 +26,9 @@ struct Vec3 {
   Vec3<T> operator-(const Vec3<T>& rhs) const {
     return {x - rhs.x, y - rhs.y, z - rhs.z};
   }
+  Vec3<T> operator-() const {
+    return {-x, -y, -z};
+  }
   Vec3<T> operator+(const Vec3<T>& rhs) const {
     return {x + rhs.x, y + rhs.y, z + rhs.z};
   }

@@ -26,8 +26,7 @@ Color TraceRay(const Scene& scene, const Vec3<float>& camera_pos, const Ray& ray
 
   const Vec3<float> position = ray * nearest_t;
   const Ray surface_normal = nearest_sphere->Normal(position);
-  const Ray obj_to_camera = camera_pos - nearest_sphere->center;
-  const float illumination = ComputeLighting(scene, position, surface_normal, obj_to_camera, nearest_sphere->specular);
+  const float illumination = ComputeLighting(scene, position, surface_normal, -ray, nearest_sphere->specular);
   return ColorMult(nearest_sphere->color, illumination);
 }
 
