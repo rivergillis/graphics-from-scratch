@@ -4,6 +4,7 @@
 #include "common.h"
 
 // Mat (basically a monochrome image format but it can technically fit T)
+// TODO: Make r,c part of the template.
 
 template <typename T>
 class Mat {
@@ -11,6 +12,7 @@ class Mat {
     // Allocs and de-allocs in ctor and dtor.
     // Inits to zero.
     Mat(int cols, int rows);
+    Mat(const Mat<T>& other);
     ~Mat();
 
     T* Row(int r);
@@ -23,8 +25,14 @@ class Mat {
 
     int Cols() const { return cols_; }
     int Rows() const { return rows_; }
+    const T* Data() const { return data_; }
 
-    // Mat<T> operator+(const float amt) const;
+    Mat<T> operator+(const Mat<T>& other) const;
+    Mat<T> operator-(const Mat<T>& other) const;
+    Mat<T> operator*(const Mat<T>& other) const;
+    // Treat the other vector as a column vector.
+    // The result is a column vector as a CxR = 1 x Rows() matrix.
+    Mat<T> operator*(const Vec3<T>& other) const;
 
   private:
     int cols_;
@@ -41,6 +49,14 @@ Mat<T>::Mat(int cols, int rows) {
   data_ = static_cast<T*>(std::calloc(cols * rows, sizeof(T)));
   cols_ = cols;
   rows_ = rows;
+}
+
+template <typename T>
+Mat<T>::Mat(const Mat<T>& other) {
+  data_ = static_cast<T*>(std::calloc(other.Cols() * other.Rows(), sizeof(T)));
+  cols_ = other.Cols();
+  rows_ = other.Rows();
+  memcpy(data_, other.Data(), cols_ * rows_ * sizeof(T));
 }
 
 template <typename T>
@@ -80,7 +96,68 @@ Mat<T>::~Mat() {
   free(data_);
 }
 
-// TODO: this should be const& but I'm dumb
+// Arithematic
+
+template <typename T>
+Mat<T> Mat<T>::operator+(const Mat<T>& other) const {
+  if (cols_ != other.cols_ || rows_ != other.rows_) {
+    throw std::runtime_error("Mat sizes don't match.");
+  }
+  Mat<T> result(cols_, rows_);
+  for (int r = 0; r < rows_; ++r) {
+    for (int c = 0; c < cols_; ++c) {
+      result.At(c, r) = At(c, r) + other.At(c, r);
+    }
+  }
+  return result;
+}
+
+template <typename T>
+Mat<T> Mat<T>::operator-(const Mat<T>& other) const {
+  if (cols_ != other.cols_ || rows_ != other.rows_) {
+    throw std::runtime_error("Mat sizes don't match.");
+  }
+  Mat<T> result(cols_, rows_);
+  for (int r = 0; r < rows_; ++r) {
+    for (int c = 0; c < cols_; ++c) {
+      result.At(c, r) = At(c, r) - other.At(c, r);
+    }
+  }
+  return result;
+}
+
+template <typename T>
+Mat<T> Mat<T>::operator*(const Mat<T>& other) const {
+  if (cols_ != other.rows_) {
+    throw std::runtime_error("Mat sizes don't match.");
+  }
+  Mat<T> result(other.cols_, rows_);
+  for (int r = 0; r < result.Rows(); ++r) {
+    for (int c = 0; c < result.Cols(); ++c) {
+      T sum = 0;
+      for (int i = 0; i < cols_; ++i) {
+        sum += At(i, r) * other.At(c, i);
+      }
+      result.At(c, r) = sum;
+    }
+  }
+  return result;
+}
+
+template <typename T>
+Mat<T> Mat<T>::operator*(const Vec3<T>& other) const {
+  if (cols_ != 3) {
+    throw std::runtime_error("Vector and Mat sizes don't match.");
+  }
+  Mat<T> result(1, rows_);
+  for (int r = 0; r < result.Rows(); ++r) {
+    const T sum = At(0, r) * other.x + At(1, r) * other.y + At(2, r) * other.z;
+    result.At(0, r) = sum;
+  }
+  return result;
+}
+
+
 template <typename T>
 std::ostream& operator<< (std::ostream &out, const Mat<T>& mat) {
   for (int r = 0; r < mat.Rows(); ++r) {
