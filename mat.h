@@ -157,7 +157,6 @@ Mat<T> Mat<T>::operator*(const Vec3<T>& other) const {
   return result;
 }
 
-
 template <typename T>
 std::ostream& operator<< (std::ostream &out, const Mat<T>& mat) {
   for (int r = 0; r < mat.Rows(); ++r) {

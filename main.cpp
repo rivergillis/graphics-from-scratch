@@ -34,47 +34,7 @@ void SetImage(Image* img) {
   }
 }
 
-void dbg() {
-  Mat<float> m(4,4);
-  m(0,0) = 2.3f;
-  m(1,1) = 2.0f;
-  std::cout << m << std::endl;
-  Mat<float> m2 = m;
-  std::cout << m2 << std::endl;
-
-  Mat<float> m3(3, 2);
-  m3(0,0)=1;
-  m3(1,0)=2;
-  m3(2,0)=3;
-  m3(0,1)=4;
-  m3(1,1)=5;
-  m3(2,1)=6;
-  std::cout << m3 << std::endl;
-  Mat<float> m4(2, 3);
-  m4(0,0)=7;
-  m4(1,0)=8;
-  m4(0,1)=9;
-  m4(1,1)=10;
-  m4(0,2)=11;
-  m4(1,2)=12;
-  std::cout << m4 << std::endl;
-  Mat<float> m5 = m3 * m4;
-  std::cout << m5 << std::endl;
-
-  Mat<float> m6(3, 2);
-  m6(0,0)=1;
-  m6(1,0)=-1;
-  m6(2,0)=2;
-  m6(0,1)=0;
-  m6(1,1)=-3;
-  m6(2,1)=1;
-  Vec3<float> v = {2,1,0};
-  Mat<float> m7 = m6 * v;
-  std::cout << m7 << std::endl;
-}
-
 int main(void) {
-  dbg();
   SDLViewer viewer("Raytracing Renderer", kWidth, kHeight);
   
   Image img(kWidth, kHeight);
