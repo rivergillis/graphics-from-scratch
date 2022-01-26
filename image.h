@@ -6,6 +6,7 @@
 
 // RGB24 Image Format
 // TODO: Create ToPPM() https://raytracing.github.io/books/RayTracingInOneWeekend.html#outputanimage/theppmimageformat
+// TODO: Make this thread-safe
 
 class Image {
   public:

@@ -5,6 +5,7 @@
 #include "sphere.h"
 #include "raytrace.h"
 #include "scene.h"
+#include "mat.h"
 
 constexpr int kRecursionDepth = 5;
 
@@ -33,7 +34,15 @@ void SetImage(Image* img) {
   }
 }
 
+void dbg() {
+  Mat<float> m(4,4);
+  m(0,0) = 2.3f;
+  m(1,1) = 2.0f;
+  std::cout << m << std::endl;
+}
+
 int main(void) {
+  dbg();
   SDLViewer viewer("Raytracing Renderer", kWidth, kHeight);
   
   Image img(kWidth, kHeight);
