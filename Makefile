@@ -8,11 +8,11 @@ CXXFLAGS=-O2 -c --std=c++20 -Wall $(SDL2CFLAGS) -I$(INC_DIR) -D DEBUG
 # Load dynamic libs here. Add output of sdl2-config --libs
 LDFLAGS=-L/opt/homebrew/lib -lSDL2
 
-app: main.o image.o sdl_viewer.o sdl_timer.o raytrace.o
-	$(CXX) $(LDFLAGS) -o app main.o image.o sdl_viewer.o sdl_timer.o raytrace.o
+rt: main_rt.o image.o sdl_viewer.o sdl_timer.o raytrace.o
+	$(CXX) $(LDFLAGS) -o rt main_rt.o image.o sdl_viewer.o sdl_timer.o raytrace.o
 
-main.o: main.cpp
-	$(CXX) $(CXXFLAGS) main.cpp
+main_rt.o: main_rt.cpp
+	$(CXX) $(CXXFLAGS) main_rt.cpp
 
 image.o: image.cpp image.h
 	$(CXX) $(CXXFLAGS) image.cpp
@@ -27,4 +27,4 @@ raytrace.o: raytrace.cpp raytrace.h
 	$(CXX) $(CXXFLAGS) raytrace.cpp
 
 clean:
-	$(RM) app *.o
+	$(RM) rt *.o
