@@ -3,6 +3,12 @@
 #include "common.h"
 #include "scene.h"
 
+namespace {
+  Ray ReflectRay(const Ray& ray, const Vec3<float>& normal) {
+    return (normal * 2 * normal.Dot(ray)) - ray;
+  }
+} // namespace
+
 std::optional<Intersection> ClosestIntersection(const Scene& scene, const Ray& ray, const Vec3<float>& ray_start, float t_min, float t_max) {
   const Sphere* nearest_sphere = nullptr;
   float nearest_t = kInf;
@@ -24,15 +30,25 @@ std::optional<Intersection> ClosestIntersection(const Scene& scene, const Ray& r
   return std::optional<Intersection>{Intersection{nearest_t, *nearest_sphere}};
 }
 
-Color TraceRay(const Scene& scene, const Vec3<float>& camera_pos, const Ray& ray, float t_min, float t_max) {
-  // Find the sphere intersection closest to us, then just use that sphere's color.
-  const auto intersection = ClosestIntersection(scene, ray, camera_pos, t_min, t_max);
+Color TraceRay(const Scene& scene, const Vec3<float>& ray_start, const Ray& ray, float t_min, float t_max, int recursion_depth) {
+  const auto intersection = ClosestIntersection(scene, ray, ray_start, t_min, t_max);
   if (!intersection) { return kBackgroundColor; }
 
-  const Vec3<float> position = ray * intersection->first;
+  // Get the local color.
+  const Vec3<float> position = ray_start + ray * intersection->first;
   const Ray surface_normal = intersection->second.Normal(position);
   const float illumination = ComputeLighting(scene, position, surface_normal, -ray, intersection->second.specular);
-  return ColorMult(intersection->second.color, illumination);
+  const Color local_color = ColorMult(intersection->second.color, illumination);
+
+  // Compute the reflected color until we can't or should stop.
+  const float reflective = intersection->second.reflective;
+  if (recursion_depth <= 0 || reflective <= 0) {
+    return local_color;
+  }
+  const Ray reflected_ray = ReflectRay(-ray, surface_normal);
+  const Color reflected_color = TraceRay(scene, position, reflected_ray, 0.1f, kInf, recursion_depth - 1);
+  // return reflected_color;
+  return ColorAdd(ColorMult(local_color, (1 - reflective)), ColorMult(reflected_color, reflective));
 }
 
 float ComputeLighting(const Scene& scene, const Vec3<float>& position, const Ray& normal, const Ray& obj_to_camera, float specular) {
@@ -56,7 +72,7 @@ float ComputeLighting(const Scene& scene, const Vec3<float>& position, const Ray
       continue;
     }
 
-    const Ray reflection = (normal * 2 * normal.Dot(light_vec)) - light_vec;
+    const Ray reflection = ReflectRay(light_vec, normal);
     const float r_dot_v = reflection.Dot(obj_to_camera);
     if (r_dot_v > 0) {
       intensity += light->Intensity() * powf(r_dot_v / (reflection.Length() * obj_to_camera.Length()), specular);

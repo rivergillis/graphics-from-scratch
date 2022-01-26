@@ -41,9 +41,10 @@ std::string string_format( const std::string& format, Args ... args )
 }
 
 // Width and height of canvas, and also the screen.
-constexpr int kWidth = 600;
-constexpr int kHeight = 600;
-constexpr Color kBackgroundColor = {248, 240, 227};
+constexpr int kWidth = 800;
+constexpr int kHeight = 800;
+// constexpr Color kBackgroundColor = {248, 240, 227};
+constexpr Color kBackgroundColor = {0, 0, 0};
 
 // This gives us an FOV of about 53deg.
 constexpr float kViewportWidth = 1.0f;
@@ -94,6 +95,9 @@ inline uint8_t SatMult(uint8_t lhs, float rhs) {
 inline Color ColorAdd(const Color& c, uint8_t amt) {
   return {SatAdd(c.x, amt), SatAdd(c.y, amt), SatAdd(c.z, amt)};
 }  
+inline Color ColorAdd(const Color& c1, const Color& c2) {
+  return {SatAdd(c1.x, c2.x), SatAdd(c1.y, c2.y), SatAdd(c1.z, c2.z)};
+}
 inline Color ColorSub(const Color& c, uint8_t amt) {
   return {SatSub(c.x, amt), SatSub(c.y, amt), SatSub(c.z, amt)};
 }
