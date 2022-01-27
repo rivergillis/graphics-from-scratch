@@ -32,7 +32,11 @@ class Mat {
     Mat<T> operator*(const Mat<T>& other) const;
     // Treat the other vector as a column vector.
     // The result is a column vector as a CxR = 1 x Rows() matrix.
+    // So if we multiply a 4x4 matrix by a 1x4 column vector, we get a 1x4 column vector.
     Mat<T> operator*(const Vec3<T>& other) const;
+
+    // Treats this is a column vector.
+    Vec3<T> ToVec3() const;
 
   private:
     int cols_;
@@ -155,6 +159,14 @@ Mat<T> Mat<T>::operator*(const Vec3<T>& other) const {
     result.At(0, r) = sum;
   }
   return result;
+}
+
+template <typename T>
+Vec3<T> Mat<T>::ToVec3() const {
+  if (cols_ != 3) {
+    throw std::runtime_error("Vector and Mat sizes don't match.");
+  }
+  return {At(0, 0), At(0, 1), At(0, 2)};
 }
 
 template <typename T>
