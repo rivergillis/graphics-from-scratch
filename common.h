@@ -41,8 +41,8 @@ std::string string_format( const std::string& format, Args ... args )
 }
 
 // Width and height of canvas, and also the screen.
-constexpr int kWidth = 800;
-constexpr int kHeight = 800;
+constexpr int kWidth = 300;
+constexpr int kHeight = 300;
 // constexpr Color kBackgroundColor = {248, 240, 227};
 constexpr Color kBackgroundColor = {0, 0, 0};
 
@@ -52,7 +52,6 @@ constexpr float kViewportHeight = 1.0f;
 
 // Distance from the camera to the viewport.
 constexpr float kD = 1;
-constexpr Vec3<float> kCameraPos = {0, 0, 0};
 
 // Converts canvas coordinates (from -C_w to +C_w-1) to screen coordinates
 // (from 0 to S_w - 1)
@@ -63,6 +62,8 @@ inline Vec2<int> CanvasToScreen(const Vec2<int>& c) {
 
 // Converts canvas coordinates (from -C_w to +C_w-1) to viewport coordinates
 // (in scene space). Note that z is always equal to d.
+// Note: this function causes the viewport to be places directly in front of
+// the camera at a distance d.
 inline Vec3<float> CanvasToViewport(const Vec2<int>& c) {
   return {c.x * (kViewportWidth / kWidth),
           c.y * (kViewportHeight / kHeight),

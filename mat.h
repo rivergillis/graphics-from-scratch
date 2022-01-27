@@ -9,11 +9,20 @@
 template <typename T>
 class Mat {
   public:
+    Mat() {}
+
     // Allocs and de-allocs in ctor and dtor.
     // Inits to zero.
     Mat(int cols, int rows);
     Mat(const Mat<T>& other);
+    Mat(Mat<T>&& other);
+    Mat<T>& operator=(Mat<T>&& other);
     ~Mat();
+
+    static Mat<T> Identity(int size);
+    static Mat<T> RotateX(float degrees);
+    static Mat<T> RotateY(float degrees);
+    static Mat<T> RotateZ(float degrees);
 
     T* Row(int r);
     const T* Row(int r) const;
@@ -42,7 +51,7 @@ class Mat {
     int cols_;
     int rows_;
 
-    T* data_;
+    T* data_ = nullptr;
 };
 
 
@@ -61,6 +70,26 @@ Mat<T>::Mat(const Mat<T>& other) {
   cols_ = other.Cols();
   rows_ = other.Rows();
   memcpy(data_, other.Data(), cols_ * rows_ * sizeof(T));
+}
+
+template <typename T>
+Mat<T>::Mat(Mat<T>&& other) {
+  data_ = other.data_;
+  cols_ = other.cols_;
+  rows_ = other.rows_;
+  other.data_ = nullptr;
+}
+
+template <typename T>
+Mat<T>& Mat<T>::operator=(Mat<T>&& other) {
+  if (this != &other) {
+    if (data_) free(data_);
+    data_ = other.data_;
+    cols_ = other.cols_;
+    rows_ = other.rows_;
+    other.data_ = nullptr;
+  }
+  return *this;
 }
 
 template <typename T>
@@ -97,7 +126,10 @@ const T Mat<T>::At(int c, int r) const {
 
 template <typename T>
 Mat<T>::~Mat() {
-  free(data_);
+  if (data_ != nullptr) {
+    free(data_);
+    data_ = nullptr;
+  }
 }
 
 // Arithematic
@@ -151,7 +183,7 @@ Mat<T> Mat<T>::operator*(const Mat<T>& other) const {
 template <typename T>
 Mat<T> Mat<T>::operator*(const Vec3<T>& other) const {
   if (cols_ != 3) {
-    throw std::runtime_error("Vector and Mat sizes don't match.");
+    throw std::runtime_error("Mat must be col_size 3.");
   }
   Mat<T> result(1, rows_);
   for (int r = 0; r < result.Rows(); ++r) {
@@ -163,10 +195,61 @@ Mat<T> Mat<T>::operator*(const Vec3<T>& other) const {
 
 template <typename T>
 Vec3<T> Mat<T>::ToVec3() const {
-  if (cols_ != 3) {
-    throw std::runtime_error("Vector and Mat sizes don't match.");
+  if (rows_ != 3) {
+    throw std::runtime_error("Mat must be row_size 3.");
   }
   return {At(0, 0), At(0, 1), At(0, 2)};
+}
+
+template <typename T>
+Mat<T> Mat<T>::Identity(int size) {
+  Mat<T> result(size, size);
+  for (int i = 0; i < size; ++i) {
+    result(i, i) = 1;
+  }
+  return result;
+}
+
+template <typename T>
+Mat<T> Mat<T>::RotateX(float degrees) {
+  const float radians = degrees * M_PI / 180.0f;
+  const float c = cos(radians);
+  const float s = sin(radians);
+  Mat<T> result(3, 3);
+  result(0, 0) = 1;
+  result(1, 1) = c;
+  result(2, 1) = -s;
+  result(1, 2) = s;
+  result(2, 2) = c;
+  return result;
+}
+
+template <typename T>
+Mat<T> Mat<T>::RotateY(float degrees) {
+  const float radians = degrees * M_PI / 180.0f;
+  const float c = cos(radians);
+  const float s = sin(radians);
+  Mat<T> result(3, 3);
+  result(0, 0) = c;
+  result(2, 0) = s;
+  result(1, 1) = 1;
+  result(0, 2) = -s;
+  result(2, 2) = c;
+  return result;
+}
+
+template <typename T>
+Mat<T> Mat<T>::RotateZ(float degrees) {
+  const float radians = degrees * M_PI / 180.0f;
+  const float c = cos(radians);
+  const float s = sin(radians);
+  Mat<T> result(3, 3);
+  result(0, 0) = c;
+  result(1, 0) = -s;
+  result(0, 1) = s;
+  result(1, 1) = c;
+  result(2, 2) = 1;
+  return result;
 }
 
 template <typename T>

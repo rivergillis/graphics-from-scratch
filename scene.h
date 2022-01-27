@@ -4,6 +4,7 @@
 #include "common.h"
 #include "sphere.h"
 #include "vec.h"
+#include "mat.h"
 
 struct Light {
   virtual Ray Direction(const Vec3<float> pos) const = 0;
@@ -41,10 +42,17 @@ struct DirectionalLight : Light {
 };
 
 struct Scene {
+  // Objects
   std::vector<Sphere> spheres;
 
+  // Lighting
   float ambient_intensity;
   std::vector<std::unique_ptr<Light>> lights;
+
+  // Camera
+  int recursion_depth;
+  Vec3<float> camera_position;
+  Mat<float> camera_rotation = Mat<float>::Identity(3);
 };
 
 #endif  // SCENE_H_
