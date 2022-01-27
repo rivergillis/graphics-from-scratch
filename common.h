@@ -41,8 +41,8 @@ std::string string_format( const std::string& format, Args ... args )
 }
 
 // Width and height of canvas, and also the screen.
-constexpr int kWidth = 300;
-constexpr int kHeight = 300;
+constexpr int kWidth = 900;
+constexpr int kHeight = 900;
 // constexpr Color kBackgroundColor = {248, 240, 227};
 constexpr Color kBackgroundColor = {0, 0, 0};
 

@@ -5,6 +5,7 @@
 #include "sphere.h"
 #include "vec.h"
 #include "mat.h"
+#include "ping_pong.h"
 
 struct Light {
   virtual Ray Direction(const Vec3<float> pos) const = 0;
