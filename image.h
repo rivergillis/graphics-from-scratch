@@ -5,7 +5,6 @@
 #include "vec.h"
 
 // RGB24 Image Format
-// TODO: Create ToPPM() https://raytracing.github.io/books/RayTracingInOneWeekend.html#outputanimage/theppmimageformat
 // TODO: Make this thread-safe
 
 class Image {
@@ -15,10 +14,13 @@ class Image {
     ~Image();
 
     uint8_t* Row(int row);
+    const uint8_t* Row(int row) const;
 
     // Returns a pixel channel value that can be changed.
     uint8_t& At(int col, int row, int channel);
+    const uint8_t At(int c, int r, int channel) const;
     uint8_t& operator()(int col, int row, int channel) { return At(col, row, channel); }
+    const uint8_t operator()(int col, int row, int channel) const { return At(col, row, channel); }
 
     void SetPixel(const Vec2<int>& xy, const Color& pix);
     void SetAll(uint8_t value);
@@ -33,13 +35,16 @@ class Image {
     };
     CropInfo GetCroppedView(int first_row, int num_rows);
 
-    int Cols() { return cols_; }
-    int Rows() { return rows_; }
+    int Cols() const { return cols_; }
+    int Rows() const { return rows_; }
     // Row width in bytes.
-    size_t RowWidth() { return cols_ * 3 * sizeof(uint8_t); }
+    size_t RowWidth() const { return cols_ * 3 * sizeof(uint8_t); }
 
     // The size of the output buffer is exactly Rows() * RowWidth().
     uint8_t* Data() { return data_; }
+    const uint8_t* Data() const { return data_; }
+
+    std::string ToPPM() const;
 
   private:
     int cols_;

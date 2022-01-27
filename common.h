@@ -10,11 +10,14 @@
 #include <exception>
 #include <stdexcept>
 #include <stdexcept>
+#include <sstream>
+#include <filesystem>
 #include <cstring>
 #include <iostream>
 #include <vector>
 #include <limits>
 #include <chrono>
+#include <fstream>
 #include <optional>
 
 #include "vec.h"
@@ -110,6 +113,24 @@ inline Color ColorMult(const Color& c, T amt) {
 inline bool FloatEquals(float lhs, float rhs) {
 static constexpr float kEpsilon = std::numeric_limits<float>::epsilon();
   return std::abs(lhs - rhs) < kEpsilon;
+}
+
+// Will overwrite the file if it exists.
+inline void WriteFile(const std::string& filename, const std::string& contents) {
+  std::ofstream out(filename);
+  out << contents;
+  out.close();
+}
+
+// Creates a subdirectory using the given string and returns the full path
+// without adding any extra slashes.
+inline std::string GetSubdirectory(const std::string& subdir) {
+  std::string path = std::filesystem::current_path();
+  path += "/" + subdir;
+  if (!std::filesystem::is_directory(path) || !std::filesystem::exists(path)) {
+    std::filesystem::create_directories(path);
+}
+  return path;
 }
 
 // ToString()

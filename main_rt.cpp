@@ -8,19 +8,21 @@
 #include "mat.h"
 #include "ping_pong.h"
 
+const std::string kSubdirName = "output_images";
+
 // Values for animating the scene
 std::vector<PingPong<float>> a;
 void InitAnim() {
   // Camera rotation
-  a.emplace_back(0, 180, 0.5f);
+  a.emplace_back(0, 180, 0.1666f);
   // One property per sphere, some sphere missing
-  a.emplace_back(-1, 1, 0.1);
-  a.emplace_back(0.5, 1.2, 0.1);
+  a.emplace_back(-1, 1, 0.01);
+  a.emplace_back(0.5, 1.2, 0.01);
   a.emplace_back(0.3, 1.3, 0.01);
-  a.emplace_back(-0.5, 0.6, 0.05);
-  a.emplace_back(-1, 2.0, 0.08);
-  a.emplace_back(-0.5, 1.5, 0.09);
-  a.emplace_back(4, 7, 0.1);
+  a.emplace_back(-0.5, 0.6, 0.02);
+  a.emplace_back(-1, 2.0, 0.03);
+  a.emplace_back(-0.5, 1.5, 0.04);
+  a.emplace_back(4, 7, 0.01);
 }
 
 void InitScene(Scene* scene) {
@@ -93,6 +95,7 @@ int main(void) {
 
   Scene scene;
   InitScene(&scene);
+  std::string path = GetSubdirectory(kSubdirName);
 
   bool quit = false;
   uint64_t i = 0;
@@ -104,6 +107,7 @@ int main(void) {
       std::chrono::duration<double> diff = Clock::now() - start_time;
       std::cout << string_format("Rendered %d rays in %ldms\n", kWidth * kHeight,
             std::chrono::duration_cast<std::chrono::milliseconds>(diff).count());
+      WriteFile(path + "/" + std::to_string(i) + ".ppm", img.ToPPM()); 
     } catch (const std::exception& e) {
       std::cerr << "ERROR: " << e.what() << std::endl;
       return 1;
@@ -118,6 +122,9 @@ int main(void) {
       }
     }
   }
+
+  std::cout << "Files written to " << path << 
+    "\nUse `ffmpeg -framerate 60 -i "  << path << "/%00d.ppm -c:v libx264 -profile:v high444 -crf 20 " << path << "/output.mp4` to create a video." << std::endl;
 
   return 0;
 }
